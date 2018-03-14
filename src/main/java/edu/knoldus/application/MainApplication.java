@@ -10,7 +10,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class MainApplication {
     public static void main(String[] args) throws InterruptedException {
-        LocalDate localDate = LocalDate.now().minusDays(1);
         Optional<CompletableFuture<List<Status>>> listStatus = TwitterOperations.getPostNewToOlder();
         Thread.sleep(5000);
         TwitterOperations.printStatusList(listStatus);
@@ -23,6 +22,7 @@ public class MainApplication {
         CompletableFuture<List<String>> likesCountList = TwitterOperations.getLikesHigherToLower();
         Thread.sleep(5000);
         likesCountList.thenAccept(strings -> strings.forEach(System.out::println));
+        LocalDate localDate = LocalDate.now().minusDays(1);
         likesCountList = TwitterOperations.getNumberAndListOfTweetOnDate(localDate);
         Thread.sleep(10000);
         likesCountList.thenAccept(strings -> strings.forEach(System.out::println));

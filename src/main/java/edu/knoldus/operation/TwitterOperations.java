@@ -17,19 +17,26 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class TwitterOperations {
-    static private String hashTag;
-    static private Twitter twitter = TwitterFactory.getSingleton();
-    static private Query query;
+    /**
+     * Getting instance of twitter factory.
+     */
+    static Twitter twitter = TwitterFactory.getSingleton();
+    static Query query;
 
+    /**
+     * @param listStatus prints the list of Status but only getCreatedAt() and getText().
+     */
     public static void printStatusList(Optional<CompletableFuture<List<Status>>> listStatus) {
-        CompletableFuture<List<Status>> list = listStatus.orElseGet(() -> CompletableFuture.completedFuture(new ArrayList<Status>()));
-        list.thenAccept(statuses -> {
-            statuses.forEach(status -> {
-                System.out.println(status.getCreatedAt() + " " + status.getText() + "\n");
-            });
-        });
+        CompletableFuture<List<Status>> list = listStatus
+                .orElseGet(() -> CompletableFuture.completedFuture(new ArrayList<Status>()));
+        list.thenAccept(statuses -> statuses.forEach(status -> {
+            System.out.println(status.getCreatedAt() + " " + status.getText() + "\n");
+        }));
     }
 
+    /**
+     * @return a list of status in Newer to Older fashion.
+     */
     public static Optional<CompletableFuture<List<Status>>> getPostNewToOlder() {
         return Optional.of(CompletableFuture.supplyAsync(() -> {
             List<Status> statusList = new ArrayList<>();
@@ -44,6 +51,9 @@ public class TwitterOperations {
         }));
     }
 
+    /**
+     * @return a list of status in Older to Newer fashion.
+     */
     public static Optional<CompletableFuture<List<Status>>> getPostOlderToNew() {
         return Optional.of(getPostNewToOlder()
                 .get()
@@ -53,6 +63,9 @@ public class TwitterOperations {
                 }));
     }
 
+    /**
+     * @return returns a list of string displaying ReTweets Higher to Lower.
+     */
     public static CompletableFuture<List<String>> getReTweetsHigherToLower() {
         return CompletableFuture.supplyAsync(() -> {
             List<Status> statusList = new ArrayList<>();
@@ -71,6 +84,9 @@ public class TwitterOperations {
                         .collect(Collectors.toList()));
     }
 
+    /**
+     * @return returns a list of string displaying Likes Higher to Lower.
+     */
     public static CompletableFuture<List<String>> getLikesHigherToLower() {
         return CompletableFuture.supplyAsync(() -> {
             List<Status> statusList = new ArrayList<>();
@@ -89,6 +105,10 @@ public class TwitterOperations {
                         .collect(Collectors.toList()));
     }
 
+    /**
+     * @param date for which the tweets need to be displayed.
+     * @return a list of tweets on the supplied date formatted as a string including date and test.
+     */
     public static CompletableFuture<List<String>> getNumberAndListOfTweetOnDate(LocalDate date) {
 
         return CompletableFuture.supplyAsync(() -> {
